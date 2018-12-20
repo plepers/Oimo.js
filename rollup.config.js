@@ -1,15 +1,16 @@
 export default {
-	entry: 'src/Oimo.js',
-	indent: '\t',
-	targets: [
+	input: 'src/Oimo.js',
+	output: [
 		{
 			format: 'umd',
-			moduleName: 'OIMO',
-			dest: 'build/oimo.js'
+			name: 'OIMO',
+			file: 'build/oimo.js',
+			indent: '\t'
 		},
 		{
 			format: 'es',
-			dest: 'build/oimo.module.js'
+			file: 'build/oimo.module.js',
+			indent: '\t'
 		}
 	]
 };
