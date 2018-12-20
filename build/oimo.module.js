@@ -46,8 +46,6 @@ if ( Object.assign === undefined ) {
 
 		Object.assign = function ( target ) {
 
-			'use strict';
-
 			if ( target === undefined || target === null ) {
 
 				throw new TypeError( 'Cannot convert undefined or null to object' );
@@ -279,6 +277,12 @@ var _Math = {
 
     },
 
+    fastInvExp: function( x ) {
+        x = +x;
+        var x2 = x * x;
+        return 1 / (1 + x + x2 * (1 / 2 + x * (1 / 6) + x2 * (1 / 24)));
+    }
+
 };
 
 function printError( clazz, msg ){
@@ -316,7 +320,6 @@ function InfoDisplay(world){
     this.MaxTotalTime = 0;
     this.MaxUpdateTime = 0;
 }
-
 Object.assign( InfoDisplay.prototype, {
 
     setTime: function(n){
@@ -518,15 +521,6 @@ Object.assign( Vec3.prototype, {
         this.x *= v.x;
         this.y *= v.y;
         this.z *= v.z;
-        return this;
-
-    },
-
-    multiplyScalar: function( s ){
-
-        this.x *= s;
-        this.y *= s;
-        this.z *= s;
         return this;
 
     },
@@ -787,7 +781,7 @@ Object.assign( Vec3.prototype, {
 
     toString: function(){
 
-        return"Vec3["+this.x.toFixed(4)+", "+this.y.toFixed(4)+", "+this.z.toFixed(4)+"]";
+        return "Vec3["+this.x.toFixed(4)+", "+this.y.toFixed(4)+", "+this.z.toFixed(4)+"]";
         
     },
 
@@ -1056,7 +1050,7 @@ Object.assign( Quat.prototype, {
 
     toString: function(){
 
-        return"Quat["+this.x.toFixed(4)+", ("+this.y.toFixed(4)+", "+this.z.toFixed(4)+", "+this.w.toFixed(4)+")]";
+        return "Quat["+this.x.toFixed(4)+", ("+this.y.toFixed(4)+", "+this.z.toFixed(4)+", "+this.w.toFixed(4)+")]";
         
     },
 
@@ -1589,7 +1583,6 @@ function AABB( minX, maxX, minY, maxY, minZ, maxZ ){
     te[3] = maxX || 0; te[4] = maxY || 0; te[5] = maxZ || 0;
 
 }
-
 Object.assign( AABB.prototype, {
 
 	AABB: true,
@@ -1792,7 +1785,6 @@ function Shape ( config ) {
     this.collidesWith = config.collidesWith;
 
 }
-
 Object.assign( Shape.prototype, {
 
     Shape: true,
@@ -1839,7 +1831,6 @@ function Box ( config, Width, Height, Depth ) {
     this.elements = new Float32Array( 24 );
 
 }
-
 Box.prototype = Object.assign( Object.create( Shape.prototype ), {
 
 	constructor: Box,
@@ -1975,7 +1966,6 @@ function Sphere( config, radius ) {
     this.radius = radius;
 
 }
-
 Sphere.prototype = Object.assign( Object.create( Shape.prototype ), {
 
 	constructor: Sphere,
@@ -2031,7 +2021,6 @@ function Cylinder ( config, radius, height ) {
     this.halfDirection = new Vec3();
 
 }
-
 Cylinder.prototype = Object.assign( Object.create( Shape.prototype ), {
 
     constructor: Cylinder,
@@ -2109,7 +2098,6 @@ function Plane( config, normal ) {
     this.normal = new Vec3( 0, 1, 0 );
 
 }
-
 Plane.prototype = Object.assign( Object.create( Shape.prototype ), {
 
     constructor: Plane,
@@ -2160,7 +2148,6 @@ function Particle( config, normal ) {
     this.type = SHAPE_PARTICLE;
 
 }
-
 Particle.prototype = Object.assign( Object.create( Shape.prototype ), {
 
     constructor: Particle,
@@ -2249,7 +2236,6 @@ function LimitMotor ( axis, fixed ) {
     this.dampingRatio = 0;
 
 }
-
 Object.assign( LimitMotor.prototype, {
 
     LimitMotor: true,
@@ -2390,7 +2376,6 @@ function Joint ( config ){
     this.b2Link = new JointLink( this );
 
 }
-
 Joint.prototype = Object.assign( Object.create( Constraint.prototype ), {
 
     constructor: Joint,
@@ -2434,7 +2419,6 @@ Joint.prototype = Object.assign( Object.create( Constraint.prototype ), {
 
             this.body1.jointLink.push( this.b1Link );
             this.body2.jointLink.push( this.b2Link );
-
         } else {
 
             if(this.body1.jointLink != null) (this.b1Link.next=this.body1.jointLink).prev = this.b1Link;
@@ -3394,7 +3378,6 @@ function HingeJoint ( config, lowerAngleLimit, upperAngleLimit ) {
     this.lc = new LinearConstraint( this );
     this.r3 = new Rotational3Constraint( this, this.limitMotor, new LimitMotor( this.tan, true ), new LimitMotor( this.bin, true ) );
 }
-
 HingeJoint.prototype = Object.assign( Object.create( Joint.prototype ), {
 
     constructor: HingeJoint,
@@ -3472,7 +3455,6 @@ function BallAndSocketJoint ( config ){
     this.lc = new LinearConstraint( this );
 
 }
-
 BallAndSocketJoint.prototype = Object.assign( Object.create( Joint.prototype ), {
 
     constructor: BallAndSocketJoint,
@@ -3805,7 +3787,6 @@ function DistanceJoint ( config, minDistance, maxDistance ){
     this.t = new TranslationalConstraint( this, this.limitMotor );
 
 }
-
 DistanceJoint.prototype = Object.assign( Object.create( Joint.prototype ), {
 
     constructor: DistanceJoint,
@@ -3866,7 +3847,6 @@ function AngularConstraint( joint, targetOrientation ) {
     this.i2 = this.b2.inverseInertia;
 
 }
-
 Object.assign( AngularConstraint.prototype, {
 
     AngularConstraint: true,
@@ -4663,7 +4643,6 @@ function PrismaticJoint( config, lowerTranslation, upperTranslation ){
     this.t3 = new Translational3Constraint( this, this.limitMotor, new LimitMotor( this.tan, true ), new LimitMotor( this.bin, true ) );
 
 }
-
 PrismaticJoint.prototype = Object.assign( Object.create( Joint.prototype ), {
 
     constructor: PrismaticJoint,
@@ -4750,7 +4729,6 @@ function SliderJoint( config, lowerTranslation, upperTranslation ){
     this.t3 = new Translational3Constraint( this, this.translationalLimitMotor, new LimitMotor( this.tan, true ), new LimitMotor( this.bin, true ) );
 
 }
-
 SliderJoint.prototype = Object.assign( Object.create( Joint.prototype ), {
 
     constructor: SliderJoint,
@@ -4881,7 +4859,6 @@ function WheelJoint ( config ){
     this.r3 = new Rotational3Constraint(this,new LimitMotor( this.nor, true ),this.rotationalLimitMotor1,this.rotationalLimitMotor2);
 
 }
-
 WheelJoint.prototype = Object.assign( Object.create( Joint.prototype ), {
 
     constructor: WheelJoint,
@@ -5250,7 +5227,6 @@ ContactConstraint.prototype = Object.assign( Object.create( Constraint.prototype
 
         var c = this.cs;
         var p, rvn, len, norImp, norTar, sepV, i1, i2;
-
         for( var i=0; i < this.num; i++ ){
 
             p = this.ps[i];
@@ -5836,6 +5812,9 @@ function RigidBody ( Position, Rotation ) {
     // Is the angular velocity.
     this.angularVelocity = new Vec3();
 
+    this.linearDamping = 0;
+    this.angularDamping = 0;
+
     //--------------------------------------------
     //  Please do not change from the outside this variables.
     //--------------------------------------------
@@ -6148,6 +6127,14 @@ Object.assign( RigidBody.prototype, {
 
                 }
 
+
+                var linScale = _Math.fastInvExp(timeStep * this.linearDamping);
+                var angScale = _Math.fastInvExp(timeStep * this.angularDamping);
+
+
+                this.linearVelocity.scaleEqual(linScale);
+                this.angularVelocity.scaleEqual(angScale);
+
                 this.position.addScaledVector(this.linearVelocity, timeStep);
                 this.orientation.addTime(this.angularVelocity, timeStep);
 
@@ -6319,7 +6306,6 @@ function Pair ( s1, s2 ){
     this.pairs = [];
 
 }
-
 Object.assign( BroadPhase.prototype, {
 
     BroadPhase: true,
@@ -6380,8 +6366,6 @@ Object.assign( BroadPhase.prototype, {
 
     collectPairs: function () {
 
-        Error("BroadPhase", "Inheritance error.");
-
     },
 
     addPair: function ( s1, s2 ) {
@@ -6412,7 +6396,6 @@ function Proxy( shape ) {
     this.aabb = shape.aabb;
 
 }
-
 Object.assign( Proxy.prototype, {
 
     Proxy: true,
@@ -6440,7 +6423,6 @@ function BasicProxy ( shape ) {
     this.id = ProxyIdCount();
 
 }
-
 BasicProxy.prototype = Object.assign( Object.create( Proxy.prototype ), {
 
     constructor: BasicProxy,
@@ -6466,7 +6448,6 @@ function BruteForceBroadPhase(){
     //this.proxies.length = 256;
 
 }
-
 
 BruteForceBroadPhase.prototype = Object.assign( Object.create( BroadPhase.prototype ), {
 
@@ -6786,7 +6767,6 @@ function SAPProxy ( sap, shape ){
     this.min[2].max2 = this.max[1];
 
 }
-
 SAPProxy.prototype = Object.assign( Object.create( Proxy.prototype ), {
 
     constructor: SAPProxy,
@@ -6849,7 +6829,6 @@ function SAPBroadPhase () {
     this.index2 = 1;
 
 }
-
 SAPBroadPhase.prototype = Object.assign( Object.create( BroadPhase.prototype ), {
 
     constructor: SAPBroadPhase,
@@ -7068,7 +7047,6 @@ function DBVT(){
     this.aabb = new AABB();
 
 }
-
 Object.assign( DBVT.prototype, {
 
     DBVT: true,
@@ -7411,7 +7389,6 @@ function DBVTProxy ( shape ) {
     this.leaf.proxy = this;
 
 }
-
 DBVTProxy.prototype = Object.assign( Object.create( Proxy.prototype ), {
 
     constructor: DBVTProxy,
@@ -7441,7 +7418,6 @@ function DBVTBroadPhase(){
     this.numLeaves = 0;
 
 }
-
 DBVTBroadPhase.prototype = Object.assign( Object.create( BroadPhase.prototype ), {
 
     constructor: DBVTBroadPhase,
@@ -7554,7 +7530,6 @@ function CollisionDetector (){
     this.flip = false;
 
 }
-
 Object.assign( CollisionDetector.prototype, {
 
     CollisionDetector: true,
@@ -7581,7 +7556,6 @@ function BoxBoxCollisionDetector() {
     this.INF = 1/0;
 
 }
-
 BoxBoxCollisionDetector.prototype = Object.assign( Object.create( CollisionDetector.prototype ), {
 
     constructor: BoxBoxCollisionDetector,
@@ -8972,7 +8946,6 @@ function BoxCylinderCollisionDetector (flip){
     this.flip = flip;
 
 }
-
 BoxCylinderCollisionDetector.prototype = Object.assign( Object.create( CollisionDetector.prototype ), {
 
     constructor: BoxCylinderCollisionDetector,
@@ -10006,7 +9979,6 @@ function CylinderCylinderCollisionDetector() {
     CollisionDetector.call( this );
 
 }
-
 CylinderCylinderCollisionDetector.prototype = Object.assign( Object.create( CollisionDetector.prototype ), {
 
     constructor: CylinderCylinderCollisionDetector,
@@ -10821,7 +10793,6 @@ function SphereBoxCollisionDetector ( flip ) {
     this.flip = flip;
 
 }
-
 SphereBoxCollisionDetector.prototype = Object.assign( Object.create( CollisionDetector.prototype ), {
 
     constructor: SphereBoxCollisionDetector,
@@ -10993,7 +10964,6 @@ function SphereCylinderCollisionDetector ( flip ){
     this.flip = flip;
 
 }
-
 SphereCylinderCollisionDetector.prototype = Object.assign( Object.create( CollisionDetector.prototype ), {
 
     constructor: SphereCylinderCollisionDetector,
@@ -11078,7 +11048,6 @@ function SphereSphereCollisionDetector (){
     CollisionDetector.call( this );
 
 }
-
 SphereSphereCollisionDetector.prototype = Object.assign( Object.create( CollisionDetector.prototype ), {
 
     constructor: SphereSphereCollisionDetector,
@@ -11125,7 +11094,6 @@ function SpherePlaneCollisionDetector ( flip ){
     this.p = new Vec3();
 
 }
-
 SpherePlaneCollisionDetector.prototype = Object.assign( Object.create( CollisionDetector.prototype ), {
 
     constructor: SpherePlaneCollisionDetector,
@@ -11193,7 +11161,6 @@ function BoxPlaneCollisionDetector ( flip ){
     this.cc2 = new Vec3();
 
 }
-
 BoxPlaneCollisionDetector.prototype = Object.assign( Object.create( CollisionDetector.prototype ), {
 
     constructor: BoxPlaneCollisionDetector,
@@ -11305,8 +11272,6 @@ BoxPlaneCollisionDetector.prototype = Object.assign( Object.create( CollisionDet
     }
 
 });
-
-//import { TetraShape } from '../collision/shape/TetraShape';
 
 /**
  * The class of physical computing world.

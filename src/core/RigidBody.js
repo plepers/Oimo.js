@@ -64,6 +64,9 @@ function RigidBody ( Position, Rotation ) {
     // Is the angular velocity.
     this.angularVelocity = new Vec3();
 
+    this.linearDamping = 0;
+    this.angularDamping = 0;
+
     //--------------------------------------------
     //  Please do not change from the outside this variables.
     //--------------------------------------------
@@ -376,6 +379,14 @@ Object.assign( RigidBody.prototype, {
 
                 }
 
+
+                var linScale = _Math.fastInvExp(timeStep * this.linearDamping);
+                var angScale = _Math.fastInvExp(timeStep * this.angularDamping);
+
+
+                this.linearVelocity.scaleEqual(linScale);
+                this.angularVelocity.scaleEqual(angScale);
+
                 this.position.addScaledVector(this.linearVelocity, timeStep);
                 this.orientation.addTime(this.angularVelocity, timeStep);
 
@@ -495,30 +506,7 @@ Object.assign( RigidBody.prototype, {
 
         return this.quaternion;
 
-    },
-
-    //---------------------------------------------
-    // AUTO UPDATE THREE MESH
-    //---------------------------------------------
-
-    connectMesh: function ( mesh ) {
-
-        this.mesh = mesh;
-        this.updateMesh();
-
-    },
-
-    updateMesh: function(){
-
-        this.pos.scale( this.position, this.scale );
-        this.quaternion.copy( this.orientation );
-
-        if( this.mesh === null ) return;
-
-        this.mesh.position.copy( this.getPosition() );
-        this.mesh.quaternion.copy( this.getQuaternion() );
-
-    },
+    }
 
 } );
 

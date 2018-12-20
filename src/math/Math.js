@@ -152,6 +152,12 @@ var _Math = {
 
     },
 
+    fastInvExp: function( x ) {
+        x = +x;
+        var x2 = x * x;
+        return 1 / (1 + x + x2 * (1 / 2 + x * (1 / 6) + x2 * (1 / 24)));
+    }
+
 }
 
 export { _Math };
